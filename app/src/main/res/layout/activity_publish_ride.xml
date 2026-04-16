@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7FAFC"
+    tools:context=".PublishRideActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="201dp"
+                android:layout_height="128dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/authride_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="24dp"
+                android:textColor="#002147"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:text="Δημοσίευση Διαδρομής"
+                />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="4dp"
+                app:cardUseCompatPadding="true"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="#002147"
+                        android:layout_marginBottom="4dp"
+                        android:text="Αφετηρία"/>
+                    <EditText
+                        android:id="@+id/et_starting_point"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:hint="π.χ. Nikis Ave"
+                        android:background="@drawable/edittext_gray"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ενδιάμεση Στάση"
+                        android:textStyle="bold"
+                        android:textColor="#002147"
+                        android:layout_marginBottom="4dp"/>
+                    <EditText
+                        android:id="@+id/et_intermediate_stops"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:hint="π.χ. Tsimiski 10"
+                        android:background="@drawable/edittext_gray"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="#002147"
+                        android:layout_marginBottom="4dp"
+                        android:text="Προορισμός"/>
+                    <EditText
+                        android:id="@+id/et_destination"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:hint="π.χ. AUTH Campus"
+                        android:background="@drawable/edittext_gray"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="#002147"
+                        android:layout_marginBottom="4dp"
+                        android:text="Ώρα Αναχώρησης"/>
+                    <EditText
+                        android:id="@+id/et_departure_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:hint="13:30"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:background="@drawable/edittext_gray"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:layout_marginBottom="24dp"/>
+
+                    <Button
+                        android:id="@+id/btn_publish_ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="#7CB342"
+                        android:text="Δημοσίευση Διαδρομής"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu"
+        android:background="@android:color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

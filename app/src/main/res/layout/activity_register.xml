@@ -13,8 +13,9 @@
         android:gravity="center_horizontal"
         android:padding="24dp">
 
+
         <ImageView
-            android:id="@+id/logoImageView"
+            android:id="@+id/logo"
             android:layout_width="201dp"
             android:layout_height="128dp"
             android:layout_marginTop="16dp"
@@ -23,12 +24,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Εγγραφή"
-            android:textColor="#002147"
-            android:textSize="22sp"
-            android:textStyle="bold"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp"
+            android:textColor="#002147"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="Εγγραφή"
+
+            />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -66,21 +69,21 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Πανεπιστημιακό Email (.auth.gr)"
                     android:textColor="#002147"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp"
+                    android:text="Πανεπιστημιακό Email (.auth.gr)"/>
 
                 <EditText
-                    android:id="@+id/registerEmailEditText"
+                    android:id="@+id/emailEditText"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="#E9ECEF"
-                    android:hint="user@csd.auth.gr"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:inputType="textEmailAddress"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="16dp"
+                    android:hint="user@csd.auth.gr"/>
 
                 <TextView
                     android:layout_width="wrap_content"
