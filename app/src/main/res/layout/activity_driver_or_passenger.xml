@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="#F8F9FA"> <ImageView
+    android:id="@+id/logo"
+    android:layout_width="201dp"
+    android:layout_height="128dp"
+    android:src="@drawable/authride_logo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Καλώς ήρθατε"
+        android:textSize="24sp"
+        android:textColor="#002147"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="24dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:elevation="6dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:paddingHorizontal="12dp"
+        android:baselineAligned="false"
+        android:weightSum="2">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingEnd="12dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/driver" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Οδηγός"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#002D56"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/btn_driver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Επιλογή"
+                android:backgroundTint="#4CAF50"
+                android:textColor="#FFFFFF"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="#D1D1D1"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingStart="12dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/passenger" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Επιβάτης"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#002D56"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/btn_passenger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Επιλογή"
+                android:backgroundTint="#2196F3"
+                android:textColor="#FFFFFF"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
