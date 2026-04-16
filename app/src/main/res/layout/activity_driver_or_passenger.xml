@@ -5,21 +5,25 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="24dp"
-    android:background="#F8F9FA"> <ImageView
+    android:background="#F8F9FA">
+
+    <ImageView
     android:id="@+id/logo"
     android:layout_width="201dp"
     android:layout_height="128dp"
+    android:layout_marginTop="16dp"
     android:src="@drawable/authride_logo" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Καλώς ήρθατε"
-        android:textSize="24sp"
-        android:textColor="#002147"
-        android:textStyle="bold"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="24dp"
+        android:textColor="#002147"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="Καλώς ήρθατε"
+         />
 
     <LinearLayout
         android:layout_width="match_parent"

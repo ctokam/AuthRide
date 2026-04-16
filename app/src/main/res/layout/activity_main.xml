@@ -9,7 +9,7 @@
     android:padding="24dp">
 
     <ImageView
-        android:id="@+id/logoImageView"
+        android:id="@+id/logo"
         android:layout_width="201dp"
         android:layout_height="128dp"
         android:layout_marginTop="16dp"
@@ -20,10 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="24dp"
-        android:text="Σύνδεση"
         android:textColor="#002147"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:text="Σύνδεση"
+         />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -42,29 +43,29 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Πανεπιστημιακό Email (.auth.gr)"
                 android:textColor="#002147"
                 android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:text="Πανεπιστημιακό Email (.auth.gr)"/>
 
             <EditText
                 android:id="@+id/emailEditText"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="#E9ECEF"
-                android:hint="Εισάγετε τα στοιχεία σας..."
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:inputType="textEmailAddress"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp"
+                android:hint="user@csd.auth.gr"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Κωδικός"
                 android:textColor="#002147"
                 android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:text="Κωδικός"/>
 
             <EditText
                 android:id="@+id/passwordEditText"

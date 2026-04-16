@@ -15,6 +15,9 @@
             android:name=".NoResults"
             android:exported="false" />
         <activity
+            android:name=".PublishRide"
+            android:exported="false" />
+        <activity
             android:name=".DriverOrPassenger"
             android:exported="false" />
         <activity
