@@ -121,7 +121,23 @@
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
                         android:layout_marginBottom="24dp"/>
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="#002147"
+                        android:layout_marginBottom="4dp"
+                        android:text="Διαθέσιμες Θέσεις"/>
+                    <EditText
+                        android:id="@+id/et_available_seats"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="π.χ. 3"
+                        android:inputType="number"
+                        android:background="@drawable/edittext_gray"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:layout_marginBottom="24dp"/>
                     <Button
                         android:id="@+id/btn_publish_ride"
                         android:layout_width="match_parent"

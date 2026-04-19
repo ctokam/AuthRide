@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="#F8F9FA"
+    android:background="#F7FAFC"
     android:padding="24dp">
 
     <ImageView
@@ -23,14 +23,13 @@
         android:textColor="#002147"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:text="Σύνδεση"
-         />
+        android:text="Σύνδεση" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -49,10 +48,10 @@
                 android:text="Πανεπιστημιακό Email (.auth.gr)"/>
 
             <EditText
-                android:id="@+id/emailEditText"
+                android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="#E9ECEF"
+                android:background="@drawable/edittext_gray"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:inputType="textEmailAddress"
@@ -68,19 +67,18 @@
                 android:text="Κωδικός"/>
 
             <EditText
-                android:id="@+id/passwordEditText"
+                android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="#E9ECEF"
+                android:background="@drawable/edittext_gray"
                 android:hint="Εισάγετε τον κωδικό σας..."
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:inputType="textPassword"
-                android:layout_marginBottom="8dp"/>
-
+                android:layout_marginBottom="24dp"/>
 
             <Button
-                android:id="@+id/loginButton"
+                android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="Σύνδεση"
@@ -92,12 +90,14 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/tv_go_to_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Δεν έχετε λογαριασμό; Εγγραφή"
         android:textColor="#002147"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp"
+        android:padding="8dp"/>
 
 </LinearLayout>

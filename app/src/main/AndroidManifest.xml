@@ -12,13 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AUTHRIDE">
         <activity
-            android:name=".NoResults"
+            android:name=".MyRidesActivity"
             android:exported="false" />
         <activity
-            android:name=".PublishRide"
+            android:name=".ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".DriverOrPassenger"
+            android:name=".Routes"
+            android:exported="false" />
+        <activity
+            android:name=".PassengerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PublishRideActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DriverOrPassengerActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
