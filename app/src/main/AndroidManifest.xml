@@ -18,7 +18,7 @@
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".Routes"
+            android:name=".database.Routes"
             android:exported="false" />
         <activity
             android:name=".PassengerActivity"

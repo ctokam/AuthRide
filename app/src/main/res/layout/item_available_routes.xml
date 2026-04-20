@@ -26,7 +26,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_myplaces"
+                android:src="@android:drawable/ic_menu_directions"
                 app:tint="#7CB342" />
 
             <TextView
@@ -43,7 +43,6 @@
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:src="@android:drawable/ic_menu_cc_am"
                 app:tint="#718096"
                 android:layout_marginEnd="4dp"/>
             <TextView

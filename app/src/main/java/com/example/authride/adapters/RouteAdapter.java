@@ -1,62 +1,79 @@
-package com.example.authride.adapters; // Βάλε το δικό σου package name
+package com.example.authride.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.authride.R; // Βάλε το δικό σου R package
-import com.example.authride.Routes;
+
+import com.example.authride.R;
+import com.example.authride.database.Route;
 import java.util.List;
 
 public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
 
-    // Εδώ θα αποθηκεύεται η λίστα με τις διαδρομές
-    private List<Routes> routeList;
+    private List<Route> routeList;
+    private OnRouteClickListener listener;
 
-    public RouteAdapter(List<Routes> routeList) {
-        this.routeList = routeList;
+    //Interface για τα κλικ στο κουμπί
+    public interface OnRouteClickListener {
+        void onBookClick(Route route);
     }
 
-    //item_available_routes.xml
+    public RouteAdapter(List<Route> routeList, OnRouteClickListener listener) {
+        this.routeList = routeList;
+        this.listener = listener;
+    }
+
     @NonNull
     @Override
     public RouteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_available_routes, parent, false);
+        // Φορτώνουμε το σχέδιο της κάρτας (item_available_routes.xml)
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_available_routes, parent, false);
         return new RouteViewHolder(view);
     }
 
-    //Σύνδεση δεδομένων
     @Override
     public void onBindViewHolder(@NonNull RouteViewHolder holder, int position) {
-        Routes currentRoute = routeList.get(position); // Παίρνουμε τη διαδρομή στη συγκεκριμένη θέση
+        Route route = routeList.get(position);
 
-        holder.tvDriverName.setText(currentRoute.getDriverName());
-        holder.tvDepartureTime.setText(currentRoute.getDepartureTime());
-        holder.tvStartLocation.setText(currentRoute.getStartLocation());
-        holder.tvEndLocation.setText(currentRoute.getEndLocation());
+        //δεδομένα---> XML
+        holder.tvStart.setText(route.getStartLocation());
+        holder.tvEnd.setText(route.getEndLocation());
+        holder.tvTime.setText(route.getDepartureTime());
+        holder.tvSeats.setText(String.valueOf(route.getAvailableSeats()));
+
+        // (Για να δείξουμε το κανονικό όνομα του οδηγού χρειάζεται πιο πολύπλοκο SQL ερώτημα. Προς το παρόν βάζουμε το ID του)
+        holder.tvDriverName.setText("Οδηγός ID: " + route.getDriverId());
+
+        // κουμπι "Κράτηση Θέσης"
+        holder.btnAction.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onBookClick(route);
+            }
+        });
     }
 
-    //Πόσες διαδρομές συνολικά;
     @Override
     public int getItemCount() {
         return routeList.size();
     }
 
-    //κρατάει TextViews από XML (για να μην τα ψάχνουμε συνέχεια)
-    public static class RouteViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDriverName, tvDepartureTime, tvStartLocation, tvEndLocation;
+    //ID ----> item_available_routes.xml
+    static class RouteViewHolder extends RecyclerView.ViewHolder {
+        TextView tvDriverName, tvStart, tvEnd, tvTime, tvSeats;
+        Button btnAction;
 
         public RouteViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            // Συνδεση τις μεταβλητες με τα IDs του item_available_routes.xml
             tvDriverName = itemView.findViewById(R.id.tvDriverName);
-            tvDepartureTime = itemView.findViewById(R.id.tvDepartureTime);
-            tvStartLocation = itemView.findViewById(R.id.tvStartLocation);
-            tvEndLocation = itemView.findViewById(R.id.tvEndLocation);
+            tvStart = itemView.findViewById(R.id.tvStartLocation);
+            tvEnd = itemView.findViewById(R.id.tvEndLocation);
+            tvTime = itemView.findViewById(R.id.tvDepartureTime);
+            tvSeats = itemView.findViewById(R.id.tvAvailableSeats);
+            btnAction = itemView.findViewById(R.id.btn_action);
         }
     }
 }
