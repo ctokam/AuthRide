@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Κάρτα μίας διαδρομής. Χρησιμοποιείται και στον επιβάτη (Κράτηση) και στις
+     "Διαδρομές μου" του οδηγού — το btn_action αλλάζει κείμενο/ενέργεια από τον adapter. -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
-    app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="#FFFFFF">
+    app:cardBackgroundColor="@color/surface"
+    app:cardCornerRadius="@dimen/card_corner"
+    app:cardElevation="@dimen/card_elevation"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/space_m">
 
+        <!-- Γραμμή: οδηγός | θέσεις | ώρα -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,33 +29,37 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_directions"
-                app:tint="#7CB342" />
+                android:contentDescription="@string/ride_icon_desc"
+                android:src="@drawable/ic_directions_car"
+                app:tint="@color/green" />
 
             <TextView
                 android:id="@+id/tvDriverName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/space_s"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#002147"
+                android:textColor="@color/text_primary"
                 tools:text="Γιώργος Π." />
 
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                app:tint="#718096"
-                android:layout_marginEnd="4dp"/>
+                android:layout_marginEnd="4dp"
+                android:contentDescription="@string/seats_icon_desc"
+                android:src="@drawable/ic_person"
+                app:tint="@color/text_secondary" />
+
             <TextView
                 android:id="@+id/tvAvailableSeats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="#718096"
-                android:textStyle="bold"
                 android:layout_marginEnd="12dp"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold"
                 tools:text="3" />
 
             <TextView
@@ -60,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#E53935"
+                android:textColor="@color/danger"
                 android:textStyle="bold"
                 tools:text="08:30" />
         </LinearLayout>
@@ -68,28 +75,28 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E2E8F0"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            android:background="@color/divider" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="@dimen/space_s">
 
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="Από:"
+                android:text="@string/label_from"
                 android:textSize="14sp"
-                android:textColor="#718096" />
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/tvStartLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:textColor="#002147"
+                android:textColor="@color/text_primary"
                 tools:text="Καλαμαριά" />
         </LinearLayout>
 
@@ -97,14 +104,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/space_m">
 
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="Προς:"
+                android:text="@string/label_to"
                 android:textSize="14sp"
-                android:textColor="#718096" />
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/tvEndLocation"
@@ -112,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#002147"
+                android:textColor="@color/text_primary"
                 tools:text="ΑΠΘ (ΣΘΕ)" />
         </LinearLayout>
 
@@ -120,11 +127,10 @@
             android:id="@+id/btn_action"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:text="Κράτηση Θέσης"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#7CB342"
+            android:text="@string/btn_book_seat"
+            android:textColor="@color/text_on_primary"
+            android:backgroundTint="@color/green"
             android:textAllCaps="false"
-            app:cornerRadius="6dp"/>
-
+            app:cornerRadius="6dp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

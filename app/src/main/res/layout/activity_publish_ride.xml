@@ -1,153 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Οθόνη Δημοσίευσης Διαδρομής (πλευρά Οδηγού). Τίτλος πάνω, φόρμα σε κάρτα, bottom nav κάτω. -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7FAFC"
+    android:background="@color/background"
     tools:context=".PublishRideActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        android:padding="16dp">
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal">
-            <ImageView
-                android:id="@+id/logo"
-                android:layout_width="201dp"
-                android:layout_height="128dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/authride_logo" />
+            android:gravity="center_horizontal"
+            android:padding="@dimen/space_m">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="24dp"
-                android:textColor="#002147"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:text="Δημοσίευση Διαδρομής"
-                />
+                style="@style/ScreenTitle"
+                android:layout_marginTop="@dimen/space_l"
+                android:layout_marginBottom="@dimen/space_l"
+                android:text="@string/publish_title" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="4dp"
-                app:cardUseCompatPadding="true"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="@dimen/space_l"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardCornerRadius="@dimen/card_corner"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:background="@color/surface"
+                    android:padding="@dimen/card_padding">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textColor="#002147"
-                        android:layout_marginBottom="4dp"
-                        android:text="Αφετηρία"/>
+                        style="@style/InputLabel"
+                        android:text="@string/label_start" />
+
                     <EditText
                         android:id="@+id/et_starting_point"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:hint="π.χ. Nikis Ave"
-                        android:background="@drawable/edittext_gray"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:layout_marginBottom="16dp"/>
+                        style="@style/AppEditText"
+                        android:hint="@string/hint_start"
+                        android:inputType="text" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ενδιάμεση Στάση"
-                        android:textStyle="bold"
-                        android:textColor="#002147"
-                        android:layout_marginBottom="4dp"/>
-                    <EditText
-                        android:id="@+id/et_intermediate_stops"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:hint="π.χ. Tsimiski 10"
-                        android:background="@drawable/edittext_gray"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:layout_marginBottom="16dp"/>
+                        style="@style/InputLabel"
+                        android:text="@string/label_destination" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textColor="#002147"
-                        android:layout_marginBottom="4dp"
-                        android:text="Προορισμός"/>
                     <EditText
                         android:id="@+id/et_destination"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:hint="π.χ. AUTH Campus"
-                        android:background="@drawable/edittext_gray"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:layout_marginBottom="16dp"/>
+                        style="@style/AppEditText"
+                        android:hint="@string/hint_destination"
+                        android:inputType="text" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textColor="#002147"
-                        android:layout_marginBottom="4dp"
-                        android:text="Ώρα Αναχώρησης"/>
+                        style="@style/InputLabel"
+                        android:text="@string/label_date" />
+
+                    <!-- focusable=false: ανοίγει DatePickerDialog με κλικ, όχι πληκτρολόγιο -->
+                    <EditText
+                        android:id="@+id/et_departure_date"
+                        style="@style/AppEditText"
+                        android:hint="@string/hint_date"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:inputType="none" />
+
+                    <TextView
+                        style="@style/InputLabel"
+                        android:text="@string/label_departure" />
+
+                    <!-- focusable=false: ανοίγει TimePickerDialog με κλικ, όχι πληκτρολόγιο -->
                     <EditText
                         android:id="@+id/et_departure_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:hint="13:30"
+                        style="@style/AppEditText"
+                        android:hint="@string/hint_departure"
                         android:focusable="false"
+                        android:clickable="true"
+                        android:cursorVisible="false"
                         android:inputType="none"
-                        android:background="@drawable/edittext_gray"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:layout_marginBottom="24dp"/>
+                        android:layout_marginBottom="@dimen/space_l" />
+
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textColor="#002147"
-                        android:layout_marginBottom="4dp"
-                        android:text="Διαθέσιμες Θέσεις"/>
+                        style="@style/InputLabel"
+                        android:text="@string/label_seats" />
+
                     <EditText
                         android:id="@+id/et_available_seats"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:hint="π.χ. 3"
+                        style="@style/AppEditText"
+                        android:hint="@string/hint_seats"
                         android:inputType="number"
-                        android:background="@drawable/edittext_gray"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:layout_marginBottom="24dp"/>
+                        android:layout_marginBottom="@dimen/space_l" />
+
                     <Button
                         android:id="@+id/btn_publish_ride"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:textAllCaps="false"
-                        android:textSize="16sp"
-                        android:textColor="@android:color/white"
-                        android:backgroundTint="#7CB342"
-                        android:text="Δημοσίευση Διαδρομής"/>
-
+                        style="@style/PrimaryButton"
+                        android:text="@string/btn_publish" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
@@ -157,8 +117,9 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/surface"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_driver"
-        android:background="@android:color/white" />
-
+        app:menu="@menu/bottom_nav_driver" />
 </androidx.constraintlayout.widget.ConstraintLayout>

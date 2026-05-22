@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
-        android:id="@+id/nav_my_rides"
-        android:icon="@android:drawable/ic_menu_directions"
-        android:title="Οι Διαδρομές μου" />
-
+        android:id="@+id/nav_available"
+        android:icon="@drawable/ic_directions_car"
+        android:title="@string/nav_available" />
     <item
-        android:id="@+id/nav_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="Αναζήτηση" />
-
+        android:id="@+id/nav_my_bookings"
+        android:icon="@drawable/ic_list"
+        android:title="@string/nav_bookings" />
     <item
         android:id="@+id/nav_profile"
-        android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="Προφίλ" />
-
+        android:icon="@drawable/ic_person"
+        android:title="@string/nav_profile" />
 </menu>

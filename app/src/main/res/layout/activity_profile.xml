@@ -1,119 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Οθόνη Προφίλ. Avatar με αρχικό γράμμα, στοιχεία χρήστη, αλλαγή ρόλου & αποσύνδεση. -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7FAFC"
+    android:background="@color/background"
     tools:context=".ProfileActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        android:padding="16dp">
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal">
-
-            <ImageView
-                android:id="@+id/logo_profile"
-                android:layout_width="150dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/authride_logo" />
+            android:gravity="center_horizontal"
+            android:padding="@dimen/space_m">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Το Προφίλ μου"
-                android:textColor="#002147"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="24dp"/>
+                style="@style/ScreenTitle"
+                android:layout_marginTop="@dimen/space_l"
+                android:layout_marginBottom="@dimen/space_l"
+                android:text="@string/profile_title" />
 
             <FrameLayout
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="@dimen/space_l">
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:drawable/btn_default"
-                    android:backgroundTint="#7CB342" />
+                    android:background="@drawable/bg_circle" />
+
                 <TextView
+                    android:id="@+id/tv_avatar_initial"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Α"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_on_primary"
                     android:textSize="40sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
             </FrameLayout>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="8dp"
+                app:cardElevation="@dimen/card_elevation"
+                app:cardCornerRadius="@dimen/card_corner"
                 app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:background="@color/surface"
+                    android:padding="@dimen/card_padding">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ονοματεπώνυμο"
-                        android:textColor="#718096"
-                        android:textSize="12sp"/>
+                        android:text="@string/label_fullname"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
                     <TextView
                         android:id="@+id/tv_profile_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_m"
                         android:text="Αλέξανδρος Παπαδόπουλος"
-                        android:textColor="#002147"
+                        android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="16dp"/>
+                        tools:ignore="HardcodedText" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Email (CSD)"
-                        android:textColor="#718096"
-                        android:textSize="12sp"/>
+                        android:text="@string/label_email_csd"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
                     <TextView
                         android:id="@+id/tv_profile_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="alexpap@csd.auth.gr"
-                        android:textColor="#002147"
+                        android:textColor="@color/text_primary"
                         android:textSize="16sp"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ΑΕΜ"
-                        android:textColor="#718096"
-                        android:textSize="12sp"/>
-                    <TextView
-                        android:id="@+id/tv_profile_aem"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="9876"
-                        android:textColor="#002147"
-                        android:textSize="16sp"/>
-
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -121,24 +104,23 @@
                 android:id="@+id/btn_switch_role"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:layout_marginTop="24dp"
-                android:text="Αλλαγή σε Επιβάτη"
+                android:layout_marginTop="@dimen/space_l"
+                android:text="@string/btn_switch_to_passenger"
                 android:textAllCaps="false"
-                android:backgroundTint="#002147"
-                android:textColor="@android:color/white"
-                app:cornerRadius="8dp"/>
+                android:backgroundTint="@color/navy"
+                android:textColor="@color/text_on_primary"
+                app:cornerRadius="@dimen/card_corner" />
 
             <Button
                 android:id="@+id/btn_logout"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="12dp"
-                android:text="Αποσύνδεση"
+                android:text="@string/btn_logout"
                 android:textAllCaps="false"
-                android:backgroundTint="#E53935"
-                android:textColor="@android:color/white"
-                app:cornerRadius="8dp"/>
-
+                android:backgroundTint="@color/danger"
+                android:textColor="@color/text_on_primary"
+                app:cornerRadius="@dimen/card_corner" />
         </LinearLayout>
     </ScrollView>
 
@@ -146,8 +128,9 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/surface"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_driver"
-        android:background="@android:color/white" />
-
+        app:menu="@menu/bottom_nav_driver" />
 </androidx.constraintlayout.widget.ConstraintLayout>

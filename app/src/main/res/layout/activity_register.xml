@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Οθόνη Εγγραφής. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7FAFC"
+    android:background="@color/background"
     android:fillViewport="true">
 
     <LinearLayout
@@ -11,103 +12,71 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:padding="24dp">
+        android:padding="@dimen/screen_padding">
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="201dp"
-            android:layout_height="128dp"
-            android:layout_marginTop="16dp"
+            android:layout_width="@dimen/logo_width"
+            android:layout_height="@dimen/logo_height"
+            android:layout_marginTop="@dimen/space_m"
+            android:contentDescription="@string/logo_desc"
             android:src="@drawable/authride_logo" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/ScreenTitle"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="24dp"
-            android:textColor="#002147"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:text="Εγγραφή" />
+            android:layout_marginBottom="@dimen/space_l"
+            android:text="@string/register_title" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
+            app:cardCornerRadius="@dimen/card_corner"
+            app:cardElevation="@dimen/card_elevation"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp"
-                android:background="#FFFFFF">
+                android:background="@color/surface"
+                android:padding="@dimen/card_padding">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ονοματεπώνυμο"
-                    android:textColor="#002147"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp"/>
+                    style="@style/InputLabel"
+                    android:text="@string/label_name" />
 
                 <EditText
                     android:id="@+id/et_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edittext_gray"
-                    android:hint="π.χ. Γιώργος Παπαδόπουλος"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:inputType="textPersonName"
-                    android:layout_marginBottom="16dp"/>
+                    style="@style/AppEditText"
+                    android:hint="@string/hint_name"
+                    android:inputType="textPersonName" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#002147"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp"
-                    android:text="Πανεπιστημιακό Email (.auth.gr)"/>
+                    style="@style/InputLabel"
+                    android:text="@string/label_email" />
 
                 <EditText
                     android:id="@+id/et_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edittext_gray"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:inputType="textEmailAddress"
-                    android:layout_marginBottom="16dp"
-                    android:hint="user@csd.auth.gr"/>
+                    style="@style/AppEditText"
+                    android:hint="@string/hint_email"
+                    android:inputType="textEmailAddress" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Κωδικός"
-                    android:textColor="#002147"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp"/>
+                    style="@style/InputLabel"
+                    android:text="@string/label_password" />
 
                 <EditText
                     android:id="@+id/et_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edittext_gray"
-                    android:hint="Δημιουργήστε κωδικό"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    style="@style/AppEditText"
+                    android:hint="@string/hint_password_register"
                     android:inputType="textPassword"
-                    android:layout_marginBottom="24dp"/> <Button
-                android:id="@+id/btn_register"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Δημιουργία Λογαριασμού"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:backgroundTint="#7CB342"
-                android:textAllCaps="false"/>
+                    android:layout_marginBottom="@dimen/space_l" />
+
+                <Button
+                    android:id="@+id/btn_register"
+                    style="@style/PrimaryButton"
+                    android:text="@string/btn_register" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -115,13 +84,12 @@
             android:id="@+id/tv_go_to_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Έχετε ήδη λογαριασμό; Σύνδεση"
-            android:textColor="#002147"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="8dp"/>
-
+            android:layout_marginTop="@dimen/space_l"
+            android:layout_marginBottom="@dimen/space_l"
+            android:padding="@dimen/space_s"
+            android:text="@string/go_to_login"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/label_text"
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>

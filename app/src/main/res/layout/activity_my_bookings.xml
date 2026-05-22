@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Οθόνη "Οι Διαδρομές μου" με tabs (Επόμενες / Ιστορικό) και λίστα. -->
+<!-- Οθόνη "Οι Κρατήσεις μου" (επιβάτης). Καθρέφτης του activity_my_rides:
+     ίδια δομή/tabs/item_route, αλλά τίτλος & bottom nav του επιβάτη. -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,19 +8,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".MyRidesActivity">
+    tools:context=".MyBookingsActivity">
 
     <TextView
-        android:id="@+id/tv_my_rides_title"
+        android:id="@+id/tv_my_bookings_title"
         style="@style/ScreenTitle"
         android:layout_marginTop="@dimen/space_l"
-        android:text="@string/my_rides_title"
+        android:text="@string/my_bookings_title"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout_rides"
+        android:id="@+id/tab_layout_bookings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_m"
@@ -27,7 +28,7 @@
         app:tabIndicatorColor="@color/green"
         app:tabSelectedTextColor="@color/text_primary"
         app:tabTextColor="@color/text_secondary"
-        app:layout_constraintTop_toBottomOf="@id/tv_my_rides_title">
+        app:layout_constraintTop_toBottomOf="@id/tv_my_bookings_title">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -41,35 +42,35 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMyRides"
+        android:id="@+id/recyclerViewMyBookings"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:padding="@dimen/space_m"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout_rides"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout_bookings"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation" />
 
     <!-- Spinner όσο φορτώνουν τα δεδομένα από το Firestore -->
     <ProgressBar
-        android:id="@+id/progress_my_rides"
+        android:id="@+id/progress_my_bookings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout_rides"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout_bookings"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Empty state όταν δεν υπάρχουν διαδρομές στο επιλεγμένο tab -->
+    <!-- Empty state όταν δεν υπάρχουν κρατήσεις στο επιλεγμένο tab -->
     <LinearLayout
-        android:id="@+id/layout_empty_my_rides"
+        android:id="@+id/layout_empty_my_bookings"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
         android:gravity="center"
         android:padding="@dimen/screen_padding"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout_rides"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout_bookings"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation">
 
         <ImageView
@@ -84,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/empty_my_rides"
+            android:text="@string/empty_my_bookings"
             android:textColor="@color/text_secondary"
             android:textSize="16sp" />
     </LinearLayout>
@@ -97,5 +98,5 @@
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_driver" />
+        app:menu="@menu/bottom_nav_passenger" />
 </androidx.constraintlayout.widget.ConstraintLayout>

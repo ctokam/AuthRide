@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Brand -->
+    <color name="navy">#002147</color>
+    <color name="green">#7CB342</color>
+    <color name="blue">#2196F3</color>
+
+    <!-- Surfaces -->
+    <color name="background">#F7FAFC</color>
+    <color name="surface">#FFFFFF</color>
+
+    <!-- Κείμενο -->
+    <color name="text_primary">#002147</color>
+    <color name="text_secondary">#718096</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Λοιπά -->
+    <color name="divider">#E2E8F0</color>
+    <color name="danger">#E53935</color>
 </resources>

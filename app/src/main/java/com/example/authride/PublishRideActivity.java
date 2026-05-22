@@ -31,7 +31,6 @@ public class PublishRideActivity extends AppCompatActivity {
         //Σύνδεση με ID XML
         etStartLocation = findViewById(R.id.et_starting_point);
         etEndLocation = findViewById(R.id.et_destination);
-        etIntermediateStops = findViewById(R.id.et_intermediate_stops);
         etDepartureTime = findViewById(R.id.et_departure_time);
         etAvailableSeats = findViewById(R.id.et_available_seats);
         btnPublish = findViewById(R.id.btn_publish_ride);
