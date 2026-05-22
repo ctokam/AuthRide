@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "376550497284",
+    "project_id": "authride-88beb",
+    "storage_bucket": "authride-88beb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376550497284:android:85487411f8bfae74226951",
+        "android_client_info": {
+          "package_name": "com.example.authride"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6aAY2oedWfSmddkZtRI1d2pvcQuOxp50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

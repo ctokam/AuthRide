@@ -72,8 +72,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // ΦΙΛΤΡΟ 2: Ιδρυματικό Email - Misuse Case
-        if (!email.endsWith("@csd.auth.gr")) {
-            etEmail.setError("Απαιτείται email του Τμήματος Πληροφορικής (@csd.auth.gr)!");
+        if (!email.endsWith(".auth.gr")) {
+            etEmail.setError("Απαιτείται email Ιδρυματικού Λογαριασμού(.auth.gr)!");
             etEmail.requestFocus();
             return;
         }

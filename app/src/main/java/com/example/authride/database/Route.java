@@ -1,45 +1,38 @@
-package com.example.authride.database;
+package com.example.authride.models;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-@Entity(tableName = "routes")
 public class Route {
-
-    @PrimaryKey(autoGenerate = true)
-    private int id; // Το μοναδικό ID της διαδρομής
-
-    private int driverId; // Το ID του χρήστη που οδηγεί (για να ξέρουμε ποιανού είναι)
-
+    private String id;
+    private String driverId;
     private String startLocation;
-    private String intermediateStops;
     private String endLocation;
     private String departureTime;
+    private int availableSeats;
+    private String meetingInstructions; // π.χ. "Στη στάση απέναντι από τη Λέσχη"
+    private String contribution; // π.χ. "2€" ή "Δωρεάν"
 
-    private int availableSeats; // Πόσες θέσεις έμειναν
+    // ΑΠΑΡΑΙΤΗΤΟ για το Firebase
+    public Route() {}
 
-    // Constructor
-    public Route(int driverId, String startLocation, String intermediateStops, String endLocation, String departureTime, int availableSeats) {
+    public Route(String driverId, String startLocation, String endLocation,
+                 String departureTime, int availableSeats, String meetingInstructions, String contribution) {
         this.driverId = driverId;
         this.startLocation = startLocation;
-        this.intermediateStops = intermediateStops;
         this.endLocation = endLocation;
         this.departureTime = departureTime;
         this.availableSeats = availableSeats;
+        this.meetingInstructions = meetingInstructions;
+        this.contribution = contribution;
     }
 
     // Getters & Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public int getDriverId() { return driverId; }
-    public void setDriverId(int driverId) { this.driverId = driverId; }
+    public String getDriverId() { return driverId; }
+    public void setDriverId(String driverId) { this.driverId = driverId; }
 
     public String getStartLocation() { return startLocation; }
     public void setStartLocation(String startLocation) { this.startLocation = startLocation; }
-
-    public String getIntermediateStops() { return intermediateStops; }
-    public void setIntermediateStops(String intermediateStops) { this.intermediateStops = intermediateStops; }
 
     public String getEndLocation() { return endLocation; }
     public void setEndLocation(String endLocation) { this.endLocation = endLocation; }
@@ -49,4 +42,10 @@ public class Route {
 
     public int getAvailableSeats() { return availableSeats; }
     public void setAvailableSeats(int availableSeats) { this.availableSeats = availableSeats; }
+
+    public String getMeetingInstructions() { return meetingInstructions; }
+    public void setMeetingInstructions(String meetingInstructions) { this.meetingInstructions = meetingInstructions; }
+
+    public String getContribution() { return contribution; }
+    public void setContribution(String contribution) { this.contribution = contribution; }
 }

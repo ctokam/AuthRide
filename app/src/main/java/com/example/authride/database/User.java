@@ -1,27 +1,24 @@
-package com.example.authride.database;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+package com.example.authride.models;
 
-@Entity(tableName = "users")
 public class User {
-
-    @PrimaryKey(autoGenerate = true)
-    private int id; // Το μοναδικό ID κάθε χρήστη
-
+    private String id; // Το UID από το Firebase Auth
     private String name;
     private String email;
-    private String password;
+    private String phoneNumber; // Απαραίτητο για επικοινωνία στο σημείο συνάντησης
 
-    // Constructor
-    public User(String name, String email, String password) {
+    // ΑΠΑΡΑΙΤΗΤΟ για το Firebase
+    public User() {}
+
+    public User(String id, String name, String email, String phoneNumber) {
+        this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.phoneNumber = phoneNumber;
     }
 
-    // Getters Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // Getters & Setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -29,6 +26,6 @@ public class User {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 }

@@ -1,29 +1,25 @@
-package com.example.authride.database;
+package com.example.authride.models;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-@Entity(tableName = "reservations")
 public class Reservation {
+    private String id;
+    private String passengerId;
+    private String routeId;
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    // ΑΠΑΡΑΙΤΗΤΟ για το Firebase
+    public Reservation() {}
 
-    private int passengerId; // Ποιος φοιτητής έκλεισε τη θέση
-    private int routeId;     // Σε ποια διαδρομή την έκλεισε
-
-    public Reservation(int passengerId, int routeId) {
+    public Reservation(String passengerId, String routeId) {
         this.passengerId = passengerId;
         this.routeId = routeId;
     }
 
-    // Getters Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // Getters & Setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public int getPassengerId() { return passengerId; }
-    public void setPassengerId(int passengerId) { this.passengerId = passengerId; }
+    public String getPassengerId() { return passengerId; }
+    public void setPassengerId(String passengerId) { this.passengerId = passengerId; }
 
-    public int getRouteId() { return routeId; }
-    public void setRouteId(int routeId) { this.routeId = routeId; }
+    public String getRouteId() { return routeId; }
+    public void setRouteId(String routeId) { this.routeId = routeId; }
 }
