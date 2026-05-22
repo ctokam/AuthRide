@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AuthRide</string>
     <string name="logo_desc">Λογότυπο AuthRide</string>
-
-    <!-- Σύνδεση -->
+    <!--  Σύνδεση  -->
     <string name="login_title">Σύνδεση</string>
     <string name="label_email">Πανεπιστημιακό Email (.auth.gr)</string>
     <string name="hint_email">user@csd.auth.gr</string>
@@ -11,22 +9,19 @@
     <string name="hint_password_login">Εισάγετε τον κωδικό σας…</string>
     <string name="btn_login">Σύνδεση</string>
     <string name="go_to_register">Δεν έχετε λογαριασμό; Εγγραφή</string>
-
-    <!-- Εγγραφή -->
+    <!--  Εγγραφή  -->
     <string name="register_title">Εγγραφή</string>
     <string name="label_name">Ονοματεπώνυμο</string>
     <string name="hint_name">π.χ. Γιώργος Παπαδόπουλος</string>
     <string name="hint_password_register">Δημιουργήστε κωδικό</string>
     <string name="btn_register">Δημιουργία Λογαριασμού</string>
     <string name="go_to_login">Έχετε ήδη λογαριασμό; Σύνδεση</string>
-
-    <!-- Επιλογή ρόλου -->
+    <!--  Επιλογή ρόλου  -->
     <string name="welcome_title">Καλώς ήρθατε</string>
     <string name="role_driver">Οδηγός</string>
     <string name="role_passenger">Επιβάτης</string>
     <string name="btn_select">Επιλογή</string>
-
-    <!-- Δημοσίευση διαδρομής -->
+    <!--  Δημοσίευση διαδρομής  -->
     <string name="publish_title">Δημοσίευση Διαδρομής</string>
     <string name="label_start">Αφετηρία</string>
     <string name="hint_start">π.χ. Πλατεία Αριστοτέλους</string>
@@ -39,45 +34,43 @@
     <string name="label_seats">Διαθέσιμες Θέσεις</string>
     <string name="hint_seats">π.χ. 3</string>
     <string name="btn_publish">Δημοσίευση Διαδρομής</string>
-
-    <!-- Οι διαδρομές μου -->
+    <!--  Οι διαδρομές μου  -->
     <string name="my_rides_title">Οι Διαδρομές μου</string>
     <string name="tab_upcoming">Επόμενες</string>
     <string name="tab_history">Ιστορικό</string>
-
-    <!-- Προφίλ -->
+    <!--  Προφίλ  -->
     <string name="profile_title">Το Προφίλ μου</string>
     <string name="label_fullname">Ονοματεπώνυμο</string>
     <string name="label_email_csd">Email (CSD)</string>
     <string name="btn_switch_to_passenger">Αλλαγή σε Επιβάτη</string>
+    <string name="btn_switch_to_driver">Αλλαγή σε Οδηγό</string>
     <string name="btn_logout">Αποσύνδεση</string>
-
-    <!-- Διαθέσιμες διαδρομές (επιβάτης) -->
+    <string name="btn_delete_account">Διαγραφή Λογαριασμού</string>
+    <!--  Διαθέσιμες διαδρομές (επιβάτης)  -->
     <string name="passenger_title">Διαθέσιμες Διαδρομές</string>
     <string name="empty_routes_title">Δεν υπάρχουν διαθέσιμες διαδρομές</string>
     <string name="empty_routes_desc">Δεν μπορέσαμε να βρούμε τρέχουσες διαδρομές αυτή τη στιγμή. Δοκιμάστε ξανά αργότερα.</string>
     <string name="btn_refresh">Ανανέωση Αναζήτησης</string>
     <string name="no_ride_desc">Καμία διαθέσιμη διαδρομή</string>
-
-    <!-- Κάρτα διαδρομής (item) -->
+    <!--  Κάρτα διαδρομής (item)  -->
     <string name="ride_icon_desc">Διαδρομή</string>
     <string name="seats_icon_desc">Διαθέσιμες θέσεις</string>
     <string name="label_from">Από:</string>
     <string name="label_to">Προς:</string>
     <string name="btn_book_seat">Κράτηση Θέσης</string>
-
-    <!-- Οι κρατήσεις μου (επιβάτης) -->
+    <string name="seats_full">Πλήρες</string>
+    <!--  Κατάσταση διαδρομής/κράτησης στο Ιστορικό  -->
+    <string name="status_cancelled">Ακυρώθηκε</string>
+    <string name="status_completed">Ολοκληρώθηκε</string>
+    <!--  Οι κρατήσεις μου (επιβάτης)  -->
     <string name="my_bookings_title">Οι Κρατήσεις μου</string>
-
-    <!-- Empty states λιστών -->
+    <!--  Empty states λιστών  -->
     <string name="empty_my_rides">Δεν έχεις δημοσιεύσει διαδρομές ακόμη.</string>
     <string name="empty_my_bookings">Δεν έχεις κάνει κρατήσεις ακόμη.</string>
-
-    <!-- Ενέργειες κάρτας (το btn_action αλλάζει ανά οθόνη) -->
+    <!--  Ενέργειες κάρτας (το btn_action αλλάζει ανά οθόνη)  -->
     <string name="btn_cancel_ride">Ακύρωση Διαδρομής</string>
     <string name="btn_cancel_booking">Ακύρωση Κράτησης</string>
-
-    <!-- Bottom navigation -->
+    <!--  Bottom navigation  -->
     <string name="nav_publish">Δημοσίευση</string>
     <string name="nav_my_rides">Διαδρομές</string>
     <string name="nav_available">Διαδρομές</string>

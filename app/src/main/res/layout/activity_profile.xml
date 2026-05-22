@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Οθόνη Προφίλ. Avatar με αρχικό γράμμα, στοιχεία χρήστη, αλλαγή ρόλου & αποσύνδεση. -->
+<!-- Οθόνη Προφίλ. Avatar με αρχικό γράμμα, στοιχεία χρήστη, αλλαγή ρόλου,
+     αποσύνδεση & διαγραφή λογαριασμού. -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -47,7 +48,8 @@
                     android:text="Α"
                     android:textColor="@color/text_on_primary"
                     android:textSize="40sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
             </FrameLayout>
 
             <androidx.cardview.widget.CardView
@@ -120,6 +122,17 @@
                 android:textAllCaps="false"
                 android:backgroundTint="@color/danger"
                 android:textColor="@color/text_on_primary"
+                app:cornerRadius="@dimen/card_corner" />
+
+            <Button
+                android:id="@+id/btn_delete_account"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/btn_delete_account"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/surface"
+                android:textColor="@color/danger"
                 app:cornerRadius="@dimen/card_corner" />
         </LinearLayout>
     </ScrollView>

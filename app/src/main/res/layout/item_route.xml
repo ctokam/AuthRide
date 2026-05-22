@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Κάρτα μίας διαδρομής. Χρησιμοποιείται και στον επιβάτη (Κράτηση) και στις
      "Διαδρομές μου" του οδηγού — το btn_action αλλάζει κείμενο/ενέργεια από τον adapter. -->
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -45,6 +46,7 @@
                 tools:text="Γιώργος Π." />
 
             <ImageView
+                android:id="@+id/ivSeatsIcon"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:layout_marginEnd="4dp"
@@ -123,10 +125,24 @@
                 tools:text="ΑΠΘ (ΣΘΕ)" />
         </LinearLayout>
 
+        <!--  Ένδειξη κατάστασης για το Ιστορικό (Ακυρώθηκε / Ολοκληρώθηκε).
+             Είναι κρυφή από προεπιλογή· ο adapter την εμφανίζει όπου χρειάζεται.  -->
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_s"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="Ακυρώθηκε"
+            tools:visibility="visible"/>
+
         <Button
             android:id="@+id/btn_action"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="48dp"
             android:text="@string/btn_book_seat"
             android:textColor="@color/text_on_primary"
             android:backgroundTint="@color/green"

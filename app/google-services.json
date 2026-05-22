@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "376550497284",
-    "project_id": "authride-88beb",
-    "storage_bucket": "authride-88beb.firebasestorage.app"
+    "project_number": "761946531480",
+    "project_id": "authride-dc88c",
+    "storage_bucket": "authride-dc88c.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:376550497284:android:85487411f8bfae74226951",
+        "mobilesdk_app_id": "1:761946531480:android:a100a4af044b72d59a52ed",
         "android_client_info": {
           "package_name": "com.example.authride"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD6aAY2oedWfSmddkZtRI1d2pvcQuOxp50"
+          "current_key": "AIzaSyBSJ8wFskhQF0ttLe6nX6R3d3sm-pMQhkI"
         }
       ],
       "services": {

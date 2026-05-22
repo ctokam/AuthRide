@@ -1,118 +1,164 @@
 package com.example.authride;
 
-import android.content.Intent;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.view.View;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import com.example.authride.database.AppDatabase;
-import com.example.authride.database.Route;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.authride.model.Ride;
+import com.example.authride.util.BottomNavHelper;
+import com.example.authride.util.TimeUtils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Calendar;
+
+/**
+ * Οθόνη δημοσίευσης διαδρομής (οδηγός). Συλλέγει αφετηρία, προορισμό,
+ * ημερομηνία+ώρα (μέσω pickers) και θέσεις, και γράφει ένα Ride στο Firestore.
+ */
 public class PublishRideActivity extends AppCompatActivity {
 
-    //Στοιχεία XML
-    private EditText etStartLocation, etEndLocation, etIntermediateStops, etDepartureTime, etAvailableSeats;
+    private EditText etStart, etDestination, etDate, etTime, etSeats;
     private Button btnPublish;
 
-    // Εργαλεία Βάσης και ID Χρήστη
-    private AppDatabase db;
-    private ExecutorService executorService;
-    private int currentDriverId = -1; //ID οδηγου
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
+    private String driverName = "";
+
+    // Κρατάει την επιλεγμένη ημερομηνία/ώρα αναχώρησης.
+    private final Calendar departure = Calendar.getInstance();
+    private boolean dateSet = false, timeSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish_ride);
 
-        //Σύνδεση με ID XML
-        etStartLocation = findViewById(R.id.et_starting_point);
-        etEndLocation = findViewById(R.id.et_destination);
-        etDepartureTime = findViewById(R.id.et_departure_time);
-        etAvailableSeats = findViewById(R.id.et_available_seats);
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        etStart = findViewById(R.id.et_starting_point);
+        etDestination = findViewById(R.id.et_destination);
+        etDate = findViewById(R.id.et_departure_date);
+        etTime = findViewById(R.id.et_departure_time);
+        etSeats = findViewById(R.id.et_available_seats);
         btnPublish = findViewById(R.id.btn_publish_ride);
 
-        // Αρχικοποίηση Βάσης
-        db = AppDatabase.getInstance(this);
-        executorService = Executors.newSingleThreadExecutor();
+        etDate.setOnClickListener(v -> showDatePicker());
+        etTime.setOnClickListener(v -> showTimePicker());
+        btnPublish.setOnClickListener(v -> publishRide());
 
-        //Λήψη ID οδηγού από προηγούμενη οθόνη
-        currentDriverId = getIntent().getIntExtra("USER_ID", -1);
+        loadDriverName();
 
-        if (currentDriverId == -1) {
-            Toast.makeText(this, "Σφάλμα ταυτοποίησης χρήστη.", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        //Λειτουργία κουμπιού "Δημοσίευση"
-        btnPublish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                publishRide();
-            }
-        });
+        BottomNavigationView nav = findViewById(R.id.bottom_navigation);
+        BottomNavHelper.setup(this, nav, R.id.nav_publish);
     }
 
-    //ΛΟΓΙΚΗ ΔΗΜΟΣΙΕΥΣΗΣ
-    private void publishRide() {
-        String start = etStartLocation.getText().toString().trim();
-        String end = etEndLocation.getText().toString().trim();
-        String stops = etIntermediateStops.getText().toString().trim();
-        String time = etDepartureTime.getText().toString().trim();
-        String seatsStr = etAvailableSeats.getText().toString().trim();
-
-        // ΦΙΛΤΡΟ 1: Έλεγχος κενων πεδίων (Οι ενδιάμεσες στάσεις μπορεί να είναι κενές)
-        if (start.isEmpty() || end.isEmpty() || time.isEmpty() || seatsStr.isEmpty()) {
-            Toast.makeText(this, "Συμπληρώστε όλα τα υποχρεωτικά πεδία!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Μετατροπή των θέσεων από κειμενο (String) σε αριθμό (int)
-        int seats;
-        try {
-            seats = Integer.parseInt(seatsStr);
-        } catch (NumberFormatException e) {
-            etAvailableSeats.setError("Εισάγετε έναν έγκυρο αριθμό!");
-            etAvailableSeats.requestFocus();
-            return;
-        }
-
-        // ΦΙΛΤΡΟ 2: έλεγχος θέσεων (Misuse Case)
-        if (seats <= 0 || seats > 6) {
-            etAvailableSeats.setError("Οι θέσεις πρέπει να είναι από 1 έως 6");
-            etAvailableSeats.requestFocus();
-            return;
-        }
-
-        //ΕΠΙΤΥΧΙΑ πάμε στο Background Thread για να γράψουμε στη βάση
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                //νέα διαδρομή
-                Route newRoute = new Route(currentDriverId, start, stops, end, time, seats);
-
-                // αποθηκευση στη βάση
-                db.routeDao().insertRoute(newRoute);
-
-                // Επιστροφη στο UI
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(PublishRideActivity.this, "Η διαδρομή δημοσιεύτηκε!", Toast.LENGTH_LONG).show();
-
-                        //στέλνουμε στην οθόνη "Οι Διαδρομές μου" για να δει τι μόλις ανέβασε
-                        Intent intent = new Intent(PublishRideActivity.this, MyRidesActivity.class);
-                        intent.putExtra("USER_ID", currentDriverId);
-                        startActivity(intent);
-
-                        finish();
+    private void loadDriverName() {
+        if (auth.getCurrentUser() == null) return;
+        db.collection("users").document(auth.getCurrentUser().getUid()).get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists() && doc.getString("fullName") != null) {
+                        driverName = doc.getString("fullName");
                     }
                 });
-            }
-        });
+    }
+
+    private void showDatePicker() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dialog = new DatePickerDialog(this, (view, year, month, day) -> {
+            departure.set(Calendar.YEAR, year);
+            departure.set(Calendar.MONTH, month);
+            departure.set(Calendar.DAY_OF_MONTH, day);
+            dateSet = true;
+            etDate.setText(TimeUtils.date(departure.getTimeInMillis()));
+        }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+        // Δεν επιτρέπουμε ημερομηνίες στο παρελθόν.
+        dialog.getDatePicker().setMinDate(now.getTimeInMillis());
+        dialog.show();
+    }
+
+    private void showTimePicker() {
+        Calendar now = Calendar.getInstance();
+        new TimePickerDialog(this, (view, hour, minute) -> {
+            departure.set(Calendar.HOUR_OF_DAY, hour);
+            departure.set(Calendar.MINUTE, minute);
+            departure.set(Calendar.SECOND, 0);
+            timeSet = true;
+            etTime.setText(TimeUtils.time(departure.getTimeInMillis()));
+        }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show();
+    }
+
+    private void publishRide() {
+        String start = etStart.getText().toString().trim();
+        String destination = etDestination.getText().toString().trim();
+        String seatsText = etSeats.getText().toString().trim();
+
+        if (TextUtils.isEmpty(start)) {
+            etStart.setError("Συμπλήρωσε την αφετηρία");
+            return;
+        }
+        if (TextUtils.isEmpty(destination)) {
+            etDestination.setError("Συμπλήρωσε τον προορισμό");
+            return;
+        }
+        if (!dateSet || !timeSet) {
+            Toast.makeText(this, "Επίλεξε ημερομηνία και ώρα αναχώρησης", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(seatsText)) {
+            etSeats.setError("Συμπλήρωσε τις διαθέσιμες θέσεις");
+            return;
+        }
+        int seats = Integer.parseInt(seatsText);
+        if (seats <= 0) {
+            etSeats.setError("Οι θέσεις πρέπει να είναι τουλάχιστον 1");
+            return;
+        }
+        if (departure.getTimeInMillis() <= System.currentTimeMillis()) {
+            Toast.makeText(this, "Η ώρα αναχώρησης πρέπει να είναι στο μέλλον", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (auth.getCurrentUser() == null) {
+            return;
+        }
+
+        btnPublish.setEnabled(false);
+        Ride ride = new Ride(
+                auth.getCurrentUser().getUid(),
+                driverName,
+                start,
+                destination,
+                departure.getTimeInMillis(),
+                seats);
+
+        db.collection("rides").add(ride)
+                .addOnSuccessListener(ref -> {
+                    Toast.makeText(this, "Η διαδρομή δημοσιεύτηκε!", Toast.LENGTH_SHORT).show();
+                    clearForm();
+                    btnPublish.setEnabled(true);
+                })
+                .addOnFailureListener(e -> {
+                    btnPublish.setEnabled(true);
+                    Toast.makeText(this, "Αποτυχία: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+    }
+
+    private void clearForm() {
+        etStart.setText("");
+        etDestination.setText("");
+        etDate.setText("");
+        etTime.setText("");
+        etSeats.setText("");
+        dateSet = false;
+        timeSet = false;
     }
 }
