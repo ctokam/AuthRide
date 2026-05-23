@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Οθόνη "Οι Διαδρομές μου" με tabs (Επόμενες / Ιστορικό) και λίστα. -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -49,7 +48,6 @@
         app:layout_constraintTop_toBottomOf="@id/tab_layout_rides"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation" />
 
-    <!-- Spinner όσο φορτώνουν τα δεδομένα από το Firestore -->
     <ProgressBar
         android:id="@+id/progress_my_rides"
         android:layout_width="wrap_content"
@@ -60,7 +58,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Empty state όταν δεν υπάρχουν διαδρομές στο επιλεγμένο tab -->
     <LinearLayout
         android:id="@+id/layout_empty_my_rides"
         android:layout_width="match_parent"
@@ -77,7 +74,6 @@
             android:layout_height="120dp"
             android:layout_marginBottom="@dimen/space_m"
             android:alpha="0.6"
-            android:contentDescription="@string/no_ride_desc"
             android:src="@drawable/no_ride" />
 
         <TextView
@@ -94,6 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/surface"
+        android:elevation="12dp"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"

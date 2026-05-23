@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Οθόνη Δημοσίευσης Διαδρομής (πλευρά Οδηγού). Τίτλος πάνω, φόρμα σε κάρτα, bottom nav κάτω. -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,12 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context=".PublishRideActivity">
 
     <ScrollView
+        android:id="@+id/scroll_publish"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="insideOverlay"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation">
 
@@ -44,69 +49,33 @@
                     android:background="@color/surface"
                     android:padding="@dimen/card_padding">
 
-                    <TextView
-                        style="@style/InputLabel"
-                        android:text="@string/label_start" />
+                    <TextView style="@style/InputLabel" android:text="@string/label_start" />
+                    <EditText android:id="@+id/et_starting_point" style="@style/AppEditText"
+                        android:hint="@string/hint_start" android:inputType="text" />
 
-                    <EditText
-                        android:id="@+id/et_starting_point"
-                        style="@style/AppEditText"
-                        android:hint="@string/hint_start"
-                        android:inputType="text" />
+                    <TextView style="@style/InputLabel" android:text="@string/label_destination" />
+                    <EditText android:id="@+id/et_destination" style="@style/AppEditText"
+                        android:hint="@string/hint_destination" android:inputType="text" />
 
-                    <TextView
-                        style="@style/InputLabel"
-                        android:text="@string/label_destination" />
-
-                    <EditText
-                        android:id="@+id/et_destination"
-                        style="@style/AppEditText"
-                        android:hint="@string/hint_destination"
-                        android:inputType="text" />
-
-                    <TextView
-                        style="@style/InputLabel"
-                        android:text="@string/label_date" />
-
-                    <!-- focusable=false: ανοίγει DatePickerDialog με κλικ, όχι πληκτρολόγιο -->
-                    <EditText
-                        android:id="@+id/et_departure_date"
-                        style="@style/AppEditText"
-                        android:hint="@string/hint_date"
-                        android:focusable="false"
-                        android:clickable="true"
-                        android:cursorVisible="false"
+                    <TextView style="@style/InputLabel" android:text="@string/label_date" />
+                    <EditText android:id="@+id/et_departure_date" style="@style/AppEditText"
+                        android:hint="@string/hint_date" android:focusable="false"
+                        android:clickable="true" android:cursorVisible="false"
                         android:inputType="none" />
 
-                    <TextView
-                        style="@style/InputLabel"
-                        android:text="@string/label_departure" />
-
-                    <!-- focusable=false: ανοίγει TimePickerDialog με κλικ, όχι πληκτρολόγιο -->
-                    <EditText
-                        android:id="@+id/et_departure_time"
-                        style="@style/AppEditText"
-                        android:hint="@string/hint_departure"
-                        android:focusable="false"
-                        android:clickable="true"
-                        android:cursorVisible="false"
+                    <TextView style="@style/InputLabel" android:text="@string/label_departure" />
+                    <EditText android:id="@+id/et_departure_time" style="@style/AppEditText"
+                        android:hint="@string/hint_departure" android:focusable="false"
+                        android:clickable="true" android:cursorVisible="false"
                         android:inputType="none"
                         android:layout_marginBottom="@dimen/space_l" />
 
-                    <TextView
-                        style="@style/InputLabel"
-                        android:text="@string/label_seats" />
-
-                    <EditText
-                        android:id="@+id/et_available_seats"
-                        style="@style/AppEditText"
-                        android:hint="@string/hint_seats"
-                        android:inputType="number"
+                    <TextView style="@style/InputLabel" android:text="@string/label_seats" />
+                    <EditText android:id="@+id/et_available_seats" style="@style/AppEditText"
+                        android:hint="@string/hint_seats" android:inputType="number"
                         android:layout_marginBottom="@dimen/space_l" />
 
-                    <Button
-                        android:id="@+id/btn_publish_ride"
-                        style="@style/PrimaryButton"
+                    <Button android:id="@+id/btn_publish_ride" style="@style/PrimaryButton"
                         android:text="@string/btn_publish" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -118,6 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/surface"
+        android:elevation="12dp"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"

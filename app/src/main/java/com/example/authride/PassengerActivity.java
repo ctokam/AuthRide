@@ -24,12 +24,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Οθόνη επιβάτη: εμφανίζει τις διαθέσιμες (ενεργές, μελλοντικές, με ελεύθερες
- * θέσεις) διαδρομές άλλων οδηγών και επιτρέπει κράτηση θέσης.
- *
- * Πατώντας μια κάρτα, ο επιβάτης βλέπει το προφίλ του οδηγού.
- */
 public class PassengerActivity extends AppCompatActivity {
 
     private RecyclerView recycler;
@@ -48,19 +42,18 @@ public class PassengerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_passenger);
 
         auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        db   = FirebaseFirestore.getInstance();
         if (auth.getCurrentUser() == null) {
             startActivity(new android.content.Intent(this, LoginActivity.class));
             finish();
             return;
         }
         myUid = auth.getCurrentUser().getUid();
-        if (auth.getCurrentUser().getEmail() != null) {
+        if (auth.getCurrentUser().getEmail() != null)
             myEmail = auth.getCurrentUser().getEmail();
-        }
 
-        recycler = findViewById(R.id.recyclerViewRoutes);
-        progress = findViewById(R.id.progress_routes);
+        recycler   = findViewById(R.id.recyclerViewRoutes);
+        progress   = findViewById(R.id.progress_routes);
         emptyState = findViewById(R.id.layout_empty_state);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
@@ -82,7 +75,8 @@ public class PassengerActivity extends AppCompatActivity {
     private void loadMyName() {
         db.collection("users").document(myUid).get()
                 .addOnSuccessListener(doc -> {
-                    if (doc.getString("fullName") != null) myName = doc.getString("fullName");
+                    if (doc.getString("fullName") != null)
+                        myName = doc.getString("fullName");
                 });
     }
 
@@ -97,9 +91,12 @@ public class PassengerActivity extends AppCompatActivity {
                     available.clear();
                     long now = System.currentTimeMillis();
                     for (Ride ride : snapshot.toObjects(Ride.class)) {
-                        boolean future = ride.getDepartureMillis() >= now;
-                        boolean notMine = !myUid.equals(ride.getDriverUid());
-                        if (future && notMine && ride.hasAvailableSeats()) {
+                        if (ride.getDepartureMillis() < now) continue;
+                        boolean mine = myUid.equals(ride.getDriverUid());
+                        if (mine) {
+                            // Δική σου διαδρομή: φαίνεται αλλά χωρίς κράτηση
+                            available.add(ride);
+                        } else if (ride.hasAvailableSeats()) {
                             available.add(ride);
                         }
                     }
@@ -122,13 +119,12 @@ public class PassengerActivity extends AppCompatActivity {
             recycler.setVisibility(View.VISIBLE);
             RouteAdapter adapter = new RouteAdapter(available, RouteAdapter.Mode.BOOK,
                     this::confirmBooking);
-            // Πάτημα κάρτας -> προβολή προφίλ οδηγού.
+            adapter.setCurrentUserUid(myUid);
             adapter.setOnRideClickListener(this::showDriverProfile);
             recycler.setAdapter(adapter);
         }
     }
 
-    /** Φέρνει και εμφανίζει σε διάλογο τα στοιχεία του οδηγού της διαδρομής. */
     private void showDriverProfile(Ride ride) {
         String driverUid = ride.getDriverUid();
         if (driverUid == null) {
@@ -137,13 +133,13 @@ public class PassengerActivity extends AppCompatActivity {
         }
         db.collection("users").document(driverUid).get()
                 .addOnSuccessListener(doc -> {
-                    String name = doc.getString("fullName");
+                    String name  = doc.getString("fullName");
                     String email = doc.getString("email");
-                    String message = "Όνομα: " + (name != null ? name : "—")
+                    String msg   = "Όνομα: " + (name  != null ? name  : "—")
                             + "\nEmail: " + (email != null ? email : "—");
                     new AlertDialog.Builder(this)
                             .setTitle("Στοιχεία οδηγού")
-                            .setMessage(message)
+                            .setMessage(msg)
                             .setPositiveButton("Κλείσιμο", null)
                             .show();
                 })
@@ -155,14 +151,21 @@ public class PassengerActivity extends AppCompatActivity {
     private void confirmBooking(Ride ride) {
         new AlertDialog.Builder(this)
                 .setTitle("Επιβεβαίωση κράτησης")
-                .setMessage("Να γίνει κράτηση θέσης στη διαδρομή προς " + ride.getDestination() + ";")
+                .setMessage("Να γίνει κράτηση θέσης στη διαδρομή προς "
+                        + ride.getDestination() + ";")
                 .setPositiveButton("Ναι", (d, w) -> bookSeat(ride))
                 .setNegativeButton("Άκυρο", null)
                 .show();
     }
 
     private void bookSeat(Ride ride) {
-        DocumentReference rideRef = db.collection("rides").document(ride.getId());
+        // Ασφάλεια: δεν επιτρέπεται κράτηση στη δική σου διαδρομή.
+        if (myUid.equals(ride.getDriverUid())) {
+            Toast.makeText(this, R.string.cannot_book_own, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        DocumentReference rideRef    = db.collection("rides").document(ride.getId());
         DocumentReference bookingRef = db.collection("bookings").document();
 
         db.runTransaction(transaction -> {
@@ -171,6 +174,11 @@ public class PassengerActivity extends AppCompatActivity {
                     || !Ride.STATUS_ACTIVE.equals(fresh.getStatus())
                     || fresh.getAvailableSeats() <= 0) {
                 throw new FirebaseFirestoreException("Δεν υπάρχουν διαθέσιμες θέσεις",
+                        FirebaseFirestoreException.Code.ABORTED);
+            }
+            if (myUid.equals(fresh.getDriverUid())) {
+                throw new FirebaseFirestoreException(
+                        "Δεν μπορείς να κάνεις κράτηση στη δική σου διαδρομή",
                         FirebaseFirestoreException.Code.ABORTED);
             }
             transaction.update(rideRef, "availableSeats", fresh.getAvailableSeats() - 1);

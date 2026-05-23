@@ -8,6 +8,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     tools:context=".ProfileActivity">
 
     <ScrollView
@@ -142,6 +144,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/surface"
+        android:elevation="12dp"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,17 +19,6 @@ import com.example.authride.util.TimeUtils;
 
 import java.util.List;
 
-/**
- * Adapter για λίστα διαδρομών ({@link Ride}) πάνω στο item_route.
- * Το κουμπί δράσης αλλάζει ανά λειτουργία:
- *  - BOOK: "Κράτηση Θέσης" (επιβάτης, διαθέσιμες διαδρομές)
- *  - CANCEL_RIDE: "Ακύρωση Διαδρομής" (οδηγός, επόμενες)
- *  - NONE: κρυμμένο κουμπί + ένδειξη κατάστασης (ιστορικό)
- *
- * Προαιρετικά, με {@link #setOnRideClickListener} μπορεί να οριστεί ενέργεια
- * όταν ο χρήστης πατάει ολόκληρη την κάρτα (π.χ. προβολή προφίλ οδηγού ή
- * λίστας επιβατών).
- */
 public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
 
     public enum Mode { BOOK, CANCEL_RIDE, NONE }
@@ -37,7 +27,6 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         void onRideAction(Ride ride);
     }
 
-    /** Listener για πάτημα ολόκληρης της κάρτας. */
     public interface OnRideClickListener {
         void onRideClick(Ride ride);
     }
@@ -46,6 +35,9 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     private final Mode mode;
     private final OnRideActionListener listener;
     private OnRideClickListener clickListener;
+    private OnRideClickListener viewPassengersListener;
+    private OnRideActionListener editSeatsListener;
+    private String currentUserUid;
 
     public RouteAdapter(List<Ride> rides, Mode mode, OnRideActionListener listener) {
         this.rides = rides;
@@ -55,6 +47,18 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
 
     public void setOnRideClickListener(OnRideClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+    public void setOnViewPassengersListener(OnRideClickListener l) {
+        this.viewPassengersListener = l;
+    }
+
+    public void setOnEditSeatsListener(OnRideActionListener l) {
+        this.editSeatsListener = l;
+    }
+
+    public void setCurrentUserUid(String uid) {
+        this.currentUserUid = uid;
     }
 
     @NonNull
@@ -78,22 +82,40 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         h.ivSeatsIcon.setVisibility(View.VISIBLE);
         h.tvAvailableSeats.setVisibility(View.VISIBLE);
         h.tvStatus.setVisibility(View.GONE);
+        h.driverActions.setVisibility(View.GONE);
+
+        boolean ownRide = currentUserUid != null
+                && currentUserUid.equals(ride.getDriverUid());
 
         switch (mode) {
             case BOOK:
                 h.btnAction.setVisibility(View.VISIBLE);
-                tint(h.btnAction, R.color.green);
-                boolean available = ride.hasAvailableSeats();
-                h.btnAction.setEnabled(available);
-                h.btnAction.setText(available
-                        ? R.string.btn_book_seat
-                        : R.string.seats_full);
-                h.btnAction.setOnClickListener(v -> {
-                    if (listener != null) listener.onRideAction(ride);
-                });
+                if (ownRide) {
+                    tint(h.btnAction, R.color.text_secondary);
+                    h.btnAction.setEnabled(false);
+                    h.btnAction.setText(R.string.btn_own_ride);
+                    h.btnAction.setOnClickListener(null);
+                } else {
+                    tint(h.btnAction, R.color.green);
+                    boolean available = ride.hasAvailableSeats();
+                    h.btnAction.setEnabled(available);
+                    h.btnAction.setText(available
+                            ? R.string.btn_book_seat
+                            : R.string.seats_full);
+                    h.btnAction.setOnClickListener(v -> {
+                        if (listener != null) listener.onRideAction(ride);
+                    });
+                }
                 break;
 
             case CANCEL_RIDE:
+                h.driverActions.setVisibility(View.VISIBLE);
+                h.btnViewPassengers.setOnClickListener(v -> {
+                    if (viewPassengersListener != null) viewPassengersListener.onRideClick(ride);
+                });
+                h.btnEditSeats.setOnClickListener(v -> {
+                    if (editSeatsListener != null) editSeatsListener.onRideAction(ride);
+                });
                 h.btnAction.setVisibility(View.VISIBLE);
                 h.btnAction.setEnabled(true);
                 tint(h.btnAction, R.color.danger);
@@ -105,7 +127,6 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
 
             case NONE:
             default:
-                // Ιστορικό: κρύβουμε το κουμπί και δείχνουμε την κατάσταση.
                 h.btnAction.setVisibility(View.GONE);
                 h.tvStatus.setVisibility(View.VISIBLE);
                 if (ride.isCancelled()) {
@@ -118,8 +139,8 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
                 break;
         }
 
-        // Πάτημα ολόκληρης της κάρτας (προαιρετικό).
-        if (clickListener != null) {
+        boolean cardClickable = clickListener != null && mode == Mode.BOOK && !ownRide;
+        if (cardClickable) {
             h.itemView.setOnClickListener(v -> clickListener.onRideClick(ride));
         } else {
             h.itemView.setOnClickListener(null);
@@ -128,9 +149,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     }
 
     @Override
-    public int getItemCount() {
-        return rides.size();
-    }
+    public int getItemCount() { return rides.size(); }
 
     private void tint(Button button, int colorRes) {
         button.setBackgroundTintList(ColorStateList.valueOf(
@@ -145,18 +164,22 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         final TextView tvDriverName, tvAvailableSeats, tvDepartureTime,
                 tvStartLocation, tvEndLocation, tvStatus;
         final ImageView ivSeatsIcon;
-        final Button btnAction;
+        final Button btnAction, btnViewPassengers, btnEditSeats;
+        final LinearLayout driverActions;
 
         RouteViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvDriverName = itemView.findViewById(R.id.tvDriverName);
+            tvDriverName     = itemView.findViewById(R.id.tvDriverName);
             tvAvailableSeats = itemView.findViewById(R.id.tvAvailableSeats);
-            tvDepartureTime = itemView.findViewById(R.id.tvDepartureTime);
-            tvStartLocation = itemView.findViewById(R.id.tvStartLocation);
-            tvEndLocation = itemView.findViewById(R.id.tvEndLocation);
-            tvStatus = itemView.findViewById(R.id.tv_status);
-            ivSeatsIcon = itemView.findViewById(R.id.ivSeatsIcon);
-            btnAction = itemView.findViewById(R.id.btn_action);
+            tvDepartureTime  = itemView.findViewById(R.id.tvDepartureTime);
+            tvStartLocation  = itemView.findViewById(R.id.tvStartLocation);
+            tvEndLocation    = itemView.findViewById(R.id.tvEndLocation);
+            tvStatus         = itemView.findViewById(R.id.tv_status);
+            ivSeatsIcon      = itemView.findViewById(R.id.ivSeatsIcon);
+            btnAction        = itemView.findViewById(R.id.btn_action);
+            driverActions    = itemView.findViewById(R.id.layout_driver_actions);
+            btnViewPassengers = itemView.findViewById(R.id.btn_view_passengers);
+            btnEditSeats     = itemView.findViewById(R.id.btn_edit_seats);
         }
     }
 }

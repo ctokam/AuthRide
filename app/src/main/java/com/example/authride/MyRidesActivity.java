@@ -2,7 +2,10 @@ package com.example.authride;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -18,20 +21,15 @@ import com.example.authride.util.BottomNavHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * "Οι Διαδρομές μου" (οδηγός). Δύο tabs: Επόμενες (ενεργές & μελλοντικές) και
- * Ιστορικό (περασμένες ή ακυρωμένες). Ακύρωση επιτρέπεται μόνο > 1 ώρα πριν.
- *
- * Πατώντας μια κάρτα διαδρομής, ο οδηγός βλέπει ποιοι επιβάτες έχουν κάνει
- * κράτηση σε αυτήν.
- */
 public class MyRidesActivity extends AppCompatActivity {
 
     private RecyclerView recycler;
@@ -51,7 +49,7 @@ public class MyRidesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_rides);
 
         auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        db   = FirebaseFirestore.getInstance();
         if (auth.getCurrentUser() == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -59,14 +57,14 @@ public class MyRidesActivity extends AppCompatActivity {
         }
         myUid = auth.getCurrentUser().getUid();
 
-        recycler = findViewById(R.id.recyclerViewMyRides);
-        progress = findViewById(R.id.progress_my_rides);
+        recycler   = findViewById(R.id.recyclerViewMyRides);
+        progress   = findViewById(R.id.progress_my_rides);
         emptyState = findViewById(R.id.layout_empty_my_rides);
-        tabs = findViewById(R.id.tab_layout_rides);
+        tabs       = findViewById(R.id.tab_layout_rides);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override public void onTabSelected(TabLayout.Tab tab) { render(); }
+            @Override public void onTabSelected(TabLayout.Tab tab)   { render(); }
             @Override public void onTabUnselected(TabLayout.Tab tab) { }
             @Override public void onTabReselected(TabLayout.Tab tab) { }
         });
@@ -105,9 +103,8 @@ public class MyRidesActivity extends AppCompatActivity {
         boolean upcomingTab = tabs.getSelectedTabPosition() == 0;
         List<Ride> filtered = new ArrayList<>();
         for (Ride ride : allRides) {
-            if (upcomingTab ? ride.isUpcoming() : !ride.isUpcoming()) {
+            if (upcomingTab ? ride.isUpcoming() : !ride.isUpcoming())
                 filtered.add(ride);
-            }
         }
 
         if (filtered.isEmpty()) {
@@ -120,13 +117,14 @@ public class MyRidesActivity extends AppCompatActivity {
                     ? RouteAdapter.Mode.CANCEL_RIDE
                     : RouteAdapter.Mode.NONE;
             RouteAdapter adapter = new RouteAdapter(filtered, mode, this::onCancelRequested);
-            // Πάτημα κάρτας -> δες ποιοι έκαναν κράτηση.
-            adapter.setOnRideClickListener(this::showRideBookings);
+            if (upcomingTab) {
+                adapter.setOnViewPassengersListener(this::showRideBookings);
+                adapter.setOnEditSeatsListener(this::showEditSeatsDialog);
+            }
             recycler.setAdapter(adapter);
         }
     }
 
-    /** Εμφανίζει σε διάλογο τους επιβάτες που έχουν κάνει κράτηση στη διαδρομή. */
     private void showRideBookings(Ride ride) {
         db.collection("bookings")
                 .whereEqualTo("rideId", ride.getId())
@@ -139,15 +137,13 @@ public class MyRidesActivity extends AppCompatActivity {
                         if (b.isCancelled()) continue;
                         count++;
                         sb.append(count).append(". ").append(b.getPassengerName());
-                        if (b.getPassengerEmail() != null && !b.getPassengerEmail().isEmpty()) {
+                        if (b.getPassengerEmail() != null && !b.getPassengerEmail().isEmpty())
                             sb.append("\n    ").append(b.getPassengerEmail());
-                        }
                         sb.append("\n\n");
                     }
                     String message = count == 0
                             ? "Κανείς δεν έχει κάνει κράτηση ακόμη."
                             : sb.toString().trim();
-
                     new AlertDialog.Builder(this)
                             .setTitle("Επιβάτες προς " + ride.getDestination())
                             .setMessage(message)
@@ -157,6 +153,74 @@ public class MyRidesActivity extends AppCompatActivity {
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Αποτυχία: " + e.getMessage(),
                                 Toast.LENGTH_LONG).show());
+    }
+
+    private void showEditSeatsDialog(Ride ride) {
+        int booked = ride.getTotalSeats() - ride.getAvailableSeats();
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setHint(R.string.edit_seats_hint);
+        input.setText(String.valueOf(ride.getTotalSeats()));
+
+        int pad = getResources().getDimensionPixelSize(R.dimen.space_m);
+        FrameLayout container = new FrameLayout(this);
+        container.setPadding(pad, pad / 2, pad, 0);
+        container.addView(input);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.edit_seats_title)
+                .setMessage(getString(R.string.edit_seats_booked, booked))
+                .setView(container)
+                .setPositiveButton("Αποθήκευση", (d, w) -> {
+                    String txt = input.getText().toString().trim();
+                    if (txt.isEmpty()) {
+                        Toast.makeText(this, R.string.edit_seats_invalid,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    int newTotal;
+                    try {
+                        newTotal = Integer.parseInt(txt);
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(this, R.string.edit_seats_invalid,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (newTotal < 1 || newTotal < booked) {
+                        Toast.makeText(this, getString(R.string.edit_seats_min, booked),
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    applySeatChange(ride, newTotal);
+                })
+                .setNegativeButton("Άκυρο", null)
+                .show();
+    }
+
+    private void applySeatChange(Ride ride, int newTotal) {
+        DocumentReference rideRef = db.collection("rides").document(ride.getId());
+        db.runTransaction(transaction -> {
+            Ride fresh = transaction.get(rideRef).toObject(Ride.class);
+            if (fresh == null || fresh.isCancelled()) {
+                throw new FirebaseFirestoreException("Η διαδρομή δεν είναι διαθέσιμη",
+                        FirebaseFirestoreException.Code.ABORTED);
+            }
+            int booked = fresh.getTotalSeats() - fresh.getAvailableSeats();
+            if (newTotal < booked) {
+                throw new FirebaseFirestoreException(
+                        getString(R.string.edit_seats_min, booked),
+                        FirebaseFirestoreException.Code.ABORTED);
+            }
+            transaction.update(rideRef,
+                    "totalSeats", newTotal,
+                    "availableSeats", newTotal - booked);
+            return null;
+        }).addOnSuccessListener(unused -> {
+            Toast.makeText(this, R.string.edit_seats_done, Toast.LENGTH_SHORT).show();
+            loadRides();
+        }).addOnFailureListener(e ->
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
     private void onCancelRequested(Ride ride) {
@@ -184,26 +248,21 @@ public class MyRidesActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show());
     }
 
-    /**
-     * Όταν ακυρώνεται μια διαδρομή, σημαδεύουμε και όλες τις κρατήσεις της ως
-     * cancelled, ώστε οι επιβάτες να το δουν στο Ιστορικό τους.
-     */
     private void cancelRelatedBookings(Ride ride) {
         db.collection("bookings")
                 .whereEqualTo("rideId", ride.getId())
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     WriteBatch batch = db.batch();
-                    for (DocumentSnapshot d : snapshot.getDocuments()) {
+                    for (DocumentSnapshot d : snapshot.getDocuments())
                         batch.update(d.getReference(), "status", Booking.STATUS_CANCELLED);
-                    }
                     batch.commit().addOnCompleteListener(t -> {
-                        Toast.makeText(this, "Η διαδρομή ακυρώθηκε", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Η διαδρομή ακυρώθηκε",
+                                Toast.LENGTH_SHORT).show();
                         loadRides();
                     });
                 })
                 .addOnFailureListener(e -> {
-                    // Η διαδρομή ακυρώθηκε ούτως ή άλλως· απλώς ανανεώνουμε.
                     Toast.makeText(this, "Η διαδρομή ακυρώθηκε", Toast.LENGTH_SHORT).show();
                     loadRides();
                 });

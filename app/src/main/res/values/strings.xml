@@ -59,6 +59,17 @@
     <string name="label_to">Προς:</string>
     <string name="btn_book_seat">Κράτηση Θέσης</string>
     <string name="seats_full">Πλήρες</string>
+    <string name="btn_own_ride">Η διαδρομή σου</string>
+    <!--  Ενέργειες οδηγού στην κάρτα διαδρομής  -->
+    <string name="btn_view_passengers">Επιβάτες</string>
+    <string name="btn_edit_seats">Αλλαγή Θέσεων</string>
+    <string name="edit_seats_title">Αλλαγή διαθέσιμων θέσεων</string>
+    <string name="edit_seats_hint">Συνολικές θέσεις</string>
+    <string name="edit_seats_booked">Έχουν κρατηθεί ήδη %1$d θέσεις.</string>
+    <string name="edit_seats_min">Οι θέσεις δεν μπορούν να είναι λιγότερες από τις ήδη κρατημένες (%1$d).</string>
+    <string name="edit_seats_invalid">Δώσε έγκυρο αριθμό θέσεων.</string>
+    <string name="edit_seats_done">Οι θέσεις ενημερώθηκαν.</string>
+    <string name="cannot_book_own">Δεν μπορείς να κάνεις κράτηση στη δική σου διαδρομή.</string>
     <!--  Κατάσταση διαδρομής/κράτησης στο Ιστορικό  -->
     <string name="status_cancelled">Ακυρώθηκε</string>
     <string name="status_completed">Ολοκληρώθηκε</string>
