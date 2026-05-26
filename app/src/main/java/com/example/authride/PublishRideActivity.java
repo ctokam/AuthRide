@@ -20,6 +20,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 
+import com.example.authride.util.BookingNotifier;
+import com.example.authride.util.NotificationHelper;
+
 /**
  * Οθόνη δημοσίευσης διαδρομής (οδηγός). Συλλέγει αφετηρία, προορισμό,
  * ημερομηνία+ώρα (μέσω pickers) και θέσεις, και γράφει ένα Ride στο Firestore.
@@ -36,6 +39,7 @@ public class PublishRideActivity extends AppCompatActivity {
     // Κρατάει την επιλεγμένη ημερομηνία/ώρα αναχώρησης.
     private final Calendar departure = Calendar.getInstance();
     private boolean dateSet = false, timeSet = false;
+    private final BookingNotifier bookingNotifier = new BookingNotifier();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,8 @@ public class PublishRideActivity extends AppCompatActivity {
 
         BottomNavigationView nav = findViewById(R.id.bottom_navigation);
         BottomNavHelper.setup(this, nav, R.id.nav_publish);
+        NotificationHelper.ensurePostPermission(this);
+
     }
 
     private void loadDriverName() {
@@ -108,6 +114,11 @@ public class PublishRideActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(destination)) {
             etDestination.setError("Συμπλήρωσε τον προορισμό");
+            return;
+        }
+        if (start.equalsIgnoreCase(destination)) {
+            etDestination.setError("Ο προορισμός πρέπει να διαφέρει από την αφετηρία");
+            etDestination.requestFocus();
             return;
         }
         if (!dateSet || !timeSet) {
@@ -160,5 +171,19 @@ public class PublishRideActivity extends AppCompatActivity {
         etSeats.setText("");
         dateSet = false;
         timeSet = false;
+    }
+
+    //EIDOPOIHSH
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (auth.getCurrentUser() != null)
+            bookingNotifier.start(this, auth.getCurrentUser().getUid());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        bookingNotifier.stop();
     }
 }

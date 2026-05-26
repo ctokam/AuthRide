@@ -18,6 +18,7 @@ import com.example.authride.model.Ride;
 import com.example.authride.util.TimeUtils;
 
 import java.util.List;
+import java.util.Set;
 
 public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
 
@@ -38,6 +39,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     private OnRideClickListener viewPassengersListener;
     private OnRideActionListener editSeatsListener;
     private String currentUserUid;
+    private Set<String> bookedRideIds;
 
     public RouteAdapter(List<Ride> rides, Mode mode, OnRideActionListener listener) {
         this.rides = rides;
@@ -90,10 +92,18 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         switch (mode) {
             case BOOK:
                 h.btnAction.setVisibility(View.VISIBLE);
+                boolean alreadyBooked = bookedRideIds != null
+                        && bookedRideIds.contains(ride.getId());
                 if (ownRide) {
                     tint(h.btnAction, R.color.text_secondary);
                     h.btnAction.setEnabled(false);
                     h.btnAction.setText(R.string.btn_own_ride);
+                    h.btnAction.setOnClickListener(null);
+                } else if (alreadyBooked) {
+                    // Έχω ήδη ενεργή κράτηση σε αυτή τη διαδρομή.
+                    tint(h.btnAction, R.color.text_secondary);
+                    h.btnAction.setEnabled(false);
+                    h.btnAction.setText(R.string.btn_already_booked);
                     h.btnAction.setOnClickListener(null);
                 } else {
                     tint(h.btnAction, R.color.green);
@@ -181,5 +191,8 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
             btnViewPassengers = itemView.findViewById(R.id.btn_view_passengers);
             btnEditSeats     = itemView.findViewById(R.id.btn_edit_seats);
         }
+    }
+    public void setBookedRideIds(Set<String> bookedRideIds) {
+        this.bookedRideIds = bookedRideIds;
     }
 }

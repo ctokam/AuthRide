@@ -17,6 +17,12 @@ import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.example.authride.model.Booking;
+import com.example.authride.model.Ride;
+import com.example.authride.util.MeetReminderScheduler;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -133,20 +139,89 @@ public class ProfileActivity extends AppCompatActivity {
      * λογαριασμό από το Firebase Authentication. Αν το Firebase ζητήσει
      * πρόσφατη σύνδεση, ενημερώνουμε τον χρήστη να ξανασυνδεθεί.
      */
+    /**
+     * Διαγραφή λογαριασμού με σωστό "καθάρισμα" (cascade):
+     *  1) Ως οδηγός: ακύρωση όλων των ενεργών διαδρομών + των κρατήσεών τους.
+     *  2) Ως επιβάτης: ακύρωση των δικών μου κρατήσεων + επιστροφή θέσης.
+     *  3) Διαγραφή προφίλ (users/{uid}) και του ίδιου του Auth λογαριασμού.
+     * Η σειρά είναι σημαντική: μετά τη διαγραφή του Auth χάνεται το δικαίωμα
+     * εγγραφής, οπότε όλες οι αλλαγές στο Firestore γίνονται ΠΡΙΝ.
+     */
     private void deleteAccount() {
-        FirebaseUser user = auth.getCurrentUser();
+        com.google.firebase.auth.FirebaseUser user = auth.getCurrentUser();
         if (user == null) {
             goToLogin();
             return;
         }
+        btnDeleteAccount.setEnabled(false);
+
+        cancelRidesAsDriver(() ->
+                cancelBookingsAsPassenger(() ->
+                        deleteProfileAndAuth(user)));
+    }
+
+    /** Βήμα 1: ακυρώνει τις ενεργές διαδρομές μου ως οδηγού και τις κρατήσεις τους. */
+    private void cancelRidesAsDriver(Runnable onDone) {
+        db.collection("rides")
+                .whereEqualTo("driverUid", myUid)
+                .whereEqualTo("status", Ride.STATUS_ACTIVE)
+                .get()
+                .addOnSuccessListener(rides -> {
+                    WriteBatch batch = db.batch();
+                    for (DocumentSnapshot d : rides.getDocuments()) {
+                        batch.update(d.getReference(), "status", Ride.STATUS_CANCELLED);
+                    }
+                    // Οι κρατήσεις των επιβατών στις διαδρομές μου (μέσω denormalized driverUid).
+                    db.collection("bookings")
+                            .whereEqualTo("driverUid", myUid)
+                            .whereEqualTo("status", Booking.STATUS_ACTIVE)
+                            .get()
+                            .addOnSuccessListener(bookings -> {
+                                for (DocumentSnapshot d : bookings.getDocuments()) {
+                                    batch.update(d.getReference(), "status", Booking.STATUS_CANCELLED);
+                                }
+                                batch.commit().addOnCompleteListener(t -> onDone.run());
+                            })
+                            .addOnFailureListener(e -> onDone.run());
+                })
+                .addOnFailureListener(e -> onDone.run());
+    }
+
+    /** Βήμα 2: ακυρώνει τις δικές μου κρατήσεις ως επιβάτη και επιστρέφει τις θέσεις. */
+    private void cancelBookingsAsPassenger(Runnable onDone) {
+        db.collection("bookings")
+                .whereEqualTo("passengerUid", myUid)
+                .whereEqualTo("status", Booking.STATUS_ACTIVE)
+                .get()
+                .addOnSuccessListener(bookings -> {
+                    WriteBatch batch = db.batch();
+                    for (DocumentSnapshot d : bookings.getDocuments()) {
+                        Booking b = d.toObject(Booking.class);
+                        // Επιστροφή θέσης στη διαδρομή (atomic increment, best-effort).
+                        if (b != null && b.getRideId() != null) {
+                            db.collection("rides").document(b.getRideId())
+                                    .update("availableSeats", FieldValue.increment(1));
+                        }
+                        // Ακύρωση τυχόν τοπικής υπενθύμισης "ώρα να συναντηθείς".
+                        MeetReminderScheduler.cancel(this, d.getId());
+                        // Διαγραφή της δικής μου κράτησης.
+                        batch.delete(d.getReference());
+                    }
+                    batch.commit().addOnCompleteListener(t -> onDone.run());
+                })
+                .addOnFailureListener(e -> onDone.run());
+    }
+
+    /** Βήμα 3: διαγραφή του εγγράφου προφίλ και του Auth λογαριασμού. */
+    private void deleteProfileAndAuth(com.google.firebase.auth.FirebaseUser user) {
         db.collection("users").document(myUid).delete()
                 .addOnCompleteListener(t -> user.delete()
                         .addOnSuccessListener(unused -> {
-                            Toast.makeText(this, "Ο λογαριασμός διαγράφηκε",
-                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Ο λογαριασμός διαγράφηκε", Toast.LENGTH_LONG).show();
                             goToLogin();
                         })
                         .addOnFailureListener(e -> {
+                            btnDeleteAccount.setEnabled(true);
                             if (e instanceof FirebaseAuthRecentLoginRequiredException) {
                                 Toast.makeText(this,
                                         "Για ασφάλεια, αποσυνδέσου και ξανασυνδέσου, "

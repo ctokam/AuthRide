@@ -29,6 +29,7 @@ import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.example.authride.util.BookingNotifier;
 
 public class MyRidesActivity extends AppCompatActivity {
 
@@ -40,6 +41,8 @@ public class MyRidesActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private String myUid;
+    private final BookingNotifier bookingNotifier = new BookingNotifier();
+
 
     private final List<Ride> allRides = new ArrayList<>();
 
@@ -266,5 +269,17 @@ public class MyRidesActivity extends AppCompatActivity {
                     Toast.makeText(this, "Η διαδρομή ακυρώθηκε", Toast.LENGTH_SHORT).show();
                     loadRides();
                 });
+    }
+    //EIDOPOIHSH
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (myUid != null) bookingNotifier.start(this, myUid);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        bookingNotifier.stop();
     }
 }

@@ -15,6 +15,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 /**
  * Κεντρική διαχείριση πλοήγησης του bottom navigation. Καλύπτει και τα δύο menu
  * (οδηγού & επιβάτη) αφού τα item ids είναι μοναδικά μεταξύ τους.
+ *
+ * Σημαντικό για το σωστό highlight: ο listener επιστρέφει false όταν πλοηγούμαστε
+ * σε άλλη οθόνη, ώστε να ΜΗΝ "κολλήσει" σκιασμένο το item του προορισμού πάνω
+ * στην τρέχουσα οθόνη. Κάθε Activity ορίζει το δικό της επιλεγμένο item εδώ, στο
+ * onCreate της — και επειδή η επιστροφή γίνεται με REORDER_TO_FRONT (χωρίς νέο
+ * onCreate), το highlight κάθε οθόνης παραμένει αυτό που όρισε η ίδια.
  */
 public final class BottomNavHelper {
 
@@ -22,11 +28,14 @@ public final class BottomNavHelper {
     }
 
     public static void setup(AppCompatActivity activity, BottomNavigationView nav, int currentItemId) {
+        // Όρισε το τρέχον item ΧΩΡΙΣ να πυροδοτηθεί πλοήγηση (listener προσωρινά null).
+        nav.setOnItemSelectedListener(null);
         nav.setSelectedItemId(currentItemId);
+
         nav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == currentItemId) {
-                return true; // ήδη εδώ
+                return true; // ήδη εδώ -> κράτα το highlighted
             }
 
             Intent intent = null;
@@ -47,7 +56,8 @@ public final class BottomNavHelper {
                 activity.startActivity(intent);
                 activity.overridePendingTransition(0, 0);
             }
-            return true;
+            // false -> μην αλλάξεις το highlight της οθόνης που φεύγει.
+            return false;
         });
     }
 }

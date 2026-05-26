@@ -15,14 +15,18 @@ import com.example.authride.adapters.BookingAdapter;
 import com.example.authride.model.Booking;
 import com.example.authride.model.Ride;
 import com.example.authride.util.BottomNavHelper;
+import com.example.authride.util.MeetReminderScheduler;
+import com.example.authride.util.BookingNotifier;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.example.authride.util.MeetReminderScheduler;
 
 /**
  * "Οι Κρατήσεις μου" (επιβάτης). Tabs Επόμενες/Ιστορικό. Η ακύρωση κράτησης
@@ -43,6 +47,19 @@ public class MyBookingsActivity extends AppCompatActivity {
 
     private final List<Booking> allBookings = new ArrayList<>();
 
+    private final BookingNotifier bookingNotifier = new BookingNotifier();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (myUid != null) bookingNotifier.start(this, myUid);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        bookingNotifier.stop();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +158,8 @@ public class MyBookingsActivity extends AppCompatActivity {
                 .addOnSuccessListener(doc -> {
                     String name = doc.getString("fullName");
                     String email = doc.getString("email");
+                    // Fallback: αν ο οδηγός διαγράφηκε, χρησιμοποίησε το αποθηκευμένο όνομα της κράτησης.
+                    if (name == null || name.isEmpty()) name = booking.getDriverName();
                     String message = "Όνομα: " + (name != null ? name : "—")
                             + "\nEmail: " + (email != null ? email : "—");
                     new AlertDialog.Builder(this)
@@ -169,14 +188,28 @@ public class MyBookingsActivity extends AppCompatActivity {
         DocumentReference rideRef = db.collection("rides").document(booking.getRideId());
 
         db.runTransaction(transaction -> {
+            // ΟΛΑ τα reads πριν τα writes (κανόνας των Firestore transactions).
+            DocumentSnapshot bookingSnap = transaction.get(bookingRef);
+
+            // Αν λείπει ή είναι ήδη ακυρωμένη, μην κάνεις τίποτα — αποτρέπει
+            // διπλή επιστροφή θέσης σε σπάνια race conditions.
+            if (!bookingSnap.exists()
+                    || Booking.STATUS_CANCELLED.equals(bookingSnap.getString("status"))) {
+                return null;
+            }
+
             Ride ride = transaction.get(rideRef).toObject(Ride.class);
-            // Αν η διαδρομή υπάρχει ακόμη, επέστρεψε τη θέση.
-            if (ride != null) {
+
+            // Σημάδεψε ως ακυρωμένη (ΔΕΝ τη διαγράφουμε -> μένει στο Ιστορικό ως "Ακυρώθηκε").
+            transaction.update(bookingRef, "status", Booking.STATUS_CANCELLED);
+
+            // Επίστρεψε τη θέση, αν η διαδρομή υπάρχει ακόμη και είναι ενεργή.
+            if (ride != null && !ride.isCancelled()) {
                 transaction.update(rideRef, "availableSeats", ride.getAvailableSeats() + 1);
             }
-            transaction.delete(bookingRef);
             return null;
         }).addOnSuccessListener(unused -> {
+            MeetReminderScheduler.cancel(this, booking.getId());
             Toast.makeText(this, "Η κράτηση ακυρώθηκε", Toast.LENGTH_SHORT).show();
             loadBookings();
         }).addOnFailureListener(e ->
