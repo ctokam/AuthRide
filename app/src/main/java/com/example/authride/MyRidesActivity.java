@@ -110,6 +110,10 @@ public class MyRidesActivity extends AppCompatActivity {
                 filtered.add(ride);
         }
 
+        java.util.Collections.sort(filtered, (a, b) -> upcomingTab
+                ? Long.compare(a.getDepartureMillis(), b.getDepartureMillis())
+                : Long.compare(b.getDepartureMillis(), a.getDepartureMillis()));
+
         if (filtered.isEmpty()) {
             emptyState.setVisibility(View.VISIBLE);
             recycler.setVisibility(View.GONE);

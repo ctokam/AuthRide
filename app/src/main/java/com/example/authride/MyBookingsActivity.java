@@ -125,6 +125,12 @@ public class MyBookingsActivity extends AppCompatActivity {
             }
         }
 
+        // Επόμενες: αύξουσα (η πιο κοντινή πάνω)
+        // Ιστορικό:  φθίνουσα (η πιο πρόσφατη πάνω)
+        java.util.Collections.sort(filtered, (a, b) -> upcomingTab
+                ? Long.compare(a.getDepartureMillis(), b.getDepartureMillis())
+                : Long.compare(b.getDepartureMillis(), a.getDepartureMillis()));
+
         if (filtered.isEmpty()) {
             emptyState.setVisibility(View.VISIBLE);
             recycler.setVisibility(View.GONE);
@@ -135,12 +141,10 @@ public class MyBookingsActivity extends AppCompatActivity {
                     ? BookingAdapter.Mode.CANCEL_BOOKING
                     : BookingAdapter.Mode.NONE;
             BookingAdapter adapter = new BookingAdapter(filtered, mode, this::confirmCancel);
-            // Πάτημα κάρτας -> προβολή προφίλ οδηγού.
             adapter.setOnBookingClickListener(this::showDriverProfile);
             recycler.setAdapter(adapter);
         }
     }
-
     /** Φέρνει και εμφανίζει σε διάλογο τα στοιχεία του οδηγού της κράτησης. */
     private void showDriverProfile(Booking booking) {
         String driverUid = booking.getDriverUid();
